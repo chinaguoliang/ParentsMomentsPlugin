@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS plugin_location (
+id int(11) NOT NULL auto_increment,
+school_id INT(11) NOT NULL,
+longitude VARCHAR(255) NOT NULL,
+latitude VARCHAR(255) NOT NULL,
+ PRIMARY KEY (`id`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;
