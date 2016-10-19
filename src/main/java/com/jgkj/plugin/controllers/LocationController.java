@@ -1,7 +1,7 @@
 package com.jgkj.plugin.controllers;
 
 import com.jgkj.plugin.domain.Location;
-import com.jgkj.plugin.repositories.LocationRepository;
+import com.jgkj.plugin.repositories.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +15,19 @@ import java.util.List;
 @Controller
 public class LocationController {
     @Autowired
-    LocationRepository locationRepository;
+    BaseRepository baseRepository;
 
     @RequestMapping("/attendance/getLocation/schoolid={schoolid}")
     @ResponseBody
     public Location getSchoolLocation(@PathVariable("schoolId") String schoolId) {
-        Location location = locationRepository.findOne(Long.parseLong(schoolId.trim()));
+        Location location = baseRepository.findOne(Long.parseLong(schoolId.trim()));
         return location;
     }
 
     @RequestMapping("/attendance/getAllLocation")
     @ResponseBody
     public List<Location> getSchoolLocation() {
-        List<Location> locationList = locationRepository.findAll();
+        List<Location> locationList = baseRepository.findAll();
         return locationList;
     }
 
@@ -40,7 +40,7 @@ public class LocationController {
         location.setSchool_id(schoolId);
         location.setLongitude(longitude);
         location.setLatitude(latitude);
-        return locationRepository.save(location);
+        return baseRepository.save(location);
     }
 
 
