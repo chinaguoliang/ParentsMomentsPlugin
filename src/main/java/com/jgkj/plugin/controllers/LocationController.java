@@ -44,14 +44,29 @@ public class LocationController {
     }
 
 
-    @RequestMapping("/testLocation")
+
+
+
+
+    //post方式请求获取数据
+    @RequestMapping(value = "/testLocation/post",method= RequestMethod.POST)
     @ResponseBody
-    public ArrayList<String> testLocation() {
-        ArrayList<String> result = new ArrayList<String>();
-        result.add("1");
-        result.add("2");
-        result.add("3");
-        result.add("4");
-        return result;
+    public String mytest(@RequestParam("schoolId") String schoolId) {
+        if (schoolId == null || "".equals(schoolId)) {
+            return "params is empty";
+        } else {
+            return schoolId;
+        }
+    }
+
+    //get方式请求获取数据
+    @RequestMapping(value = "/testLocation/get",method= RequestMethod.GET)
+    @ResponseBody
+    public String mytest1(@RequestParam("schoolId") String schoolId) {
+        if (schoolId == null || "".equals(schoolId)) {
+            return "params is empty";
+        } else {
+            return schoolId;
+        }
     }
 }
