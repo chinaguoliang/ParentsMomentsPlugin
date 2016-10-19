@@ -13,14 +13,14 @@ import java.util.List;
  * Created by chen on 16/10/19.
  */
 @Controller
-public class LocationController {
+public class LocationController extends BaseController{
     @Autowired
     BaseRepository baseRepository;
 
-    @RequestMapping("/attendance/getLocation/schoolid={schoolid}")
+    @RequestMapping("/attendance/getLocation")
     @ResponseBody
-    public Location getSchoolLocation(@PathVariable("schoolId") String schoolId) {
-        Location location = baseRepository.findOne(Long.parseLong(schoolId.trim()));
+    public Location getSchoolLocation(@RequestParam("id") long id) {
+        Location location = baseRepository.findOne(id);
         return location;
     }
 
@@ -32,10 +32,9 @@ public class LocationController {
     }
 
 
-
-    @RequestMapping("/attendance/saveLocation/schoolid={schoolid}/longitude={longitude}/latitude={latitude}")
+    @RequestMapping("/attendance/saveLocation")
     @ResponseBody
-    public Location saveSchoolLocation(@PathVariable("schoolid") int schoolId,@PathVariable("longitude") String longitude,@PathVariable("latitude") String latitude) {
+    public Location saveSchoolLocation(@RequestParam("schoolid") int schoolId,@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude) {
         Location location = new Location();
         location.setSchool_id(schoolId);
         location.setLongitude(longitude);
@@ -44,12 +43,8 @@ public class LocationController {
     }
 
 
-
-
-
-
     //post方式请求获取数据
-    @RequestMapping(value = "/testLocation/post",method= RequestMethod.POST)
+    @RequestMapping(value = "/testLocation/post")
     @ResponseBody
     public String mytest(@RequestParam("schoolId") String schoolId) {
         if (schoolId == null || "".equals(schoolId)) {
@@ -60,7 +55,7 @@ public class LocationController {
     }
 
     //get方式请求获取数据
-    @RequestMapping(value = "/testLocation/get",method= RequestMethod.GET)
+    @RequestMapping(value = "/testLocation/get")
     @ResponseBody
     public String mytest1(@RequestParam("schoolId") String schoolId) {
         if (schoolId == null || "".equals(schoolId)) {
