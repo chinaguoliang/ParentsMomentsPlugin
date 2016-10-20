@@ -3,9 +3,13 @@ package com.jgkj.plugin.controllers;
 import com.jgkj.plugin.domain.Location;
 import com.jgkj.plugin.repositories.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +18,7 @@ import java.util.List;
  */
 @Controller
 public class LocationController extends BaseController{
+
     @Autowired
     BaseRepository baseRepository;
 
@@ -43,6 +48,22 @@ public class LocationController extends BaseController{
     }
 
 
+    @RequestMapping("/attendance/getLocationBySchoolId")
+    @ResponseBody
+    public Location getLocationBySchoolId(@RequestParam("schoolid") final int schoolId) {
+        Specification<Location> specification = new Specification<Location>() {
+            @Override
+            public Predicate toPredicate(Root<Location> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Predicate condition = criteriaBuilder.equal(root.get("school_id"), schoolId);
+
+                return criteriaBuilder.and(condition);
+            }
+        };
+        Object location = baseRepository.findOne(specification);
+        return (Location) location;
+    }
+
+
     //post方式请求获取数据
     @RequestMapping(value = "/testLocation/post")
     @ResponseBody
@@ -64,4 +85,24 @@ public class LocationController extends BaseController{
             return schoolId;
         }
     }
+
+
+//    public Location findAllByIdAndName(final Long id, final String name) {
+//        Specification<Location> specification = new Specification<Location>() {
+//            @Override
+//            public Predicate toPredicate(Root<Location> root,
+//                                         CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+//                List<Predicate> predicates = new ArrayList<Predicate>();
+//                Path<Long> $id = root.get("id");
+//                Predicate _id = criteriaBuilder.equal($id, id);
+//                predicates.add(_id);
+//                Path<Long> $name = root.get("name");
+//                Predicate _name = criteriaBuilder.equal($name, name);
+//                predicates.add(_name);
+//                return criteriaBuilder.and(predicates
+//                        .toArray(new Predicate[] {}));
+//            }
+//        };
+//        return baseRepository.findOne(specification);
+//    }
 }

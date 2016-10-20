@@ -14,7 +14,7 @@ public class Location implements Serializable{
     private Long id;
 
     @Column(nullable = false)
-    private int school_id;
+    public int school_id;
 
     @Column(nullable = false)
     private String longitude;
