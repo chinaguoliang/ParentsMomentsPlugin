@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 /**
  * Created by chen on 16/10/20.
  */
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Controller
 public class VideoController {
     @Autowired

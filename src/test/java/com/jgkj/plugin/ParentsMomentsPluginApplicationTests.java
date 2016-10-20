@@ -12,5 +12,4 @@ public class ParentsMomentsPluginApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-
 }
