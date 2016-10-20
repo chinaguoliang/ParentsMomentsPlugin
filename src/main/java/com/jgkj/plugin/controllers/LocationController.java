@@ -1,6 +1,7 @@
 package com.jgkj.plugin.controllers;
 
 import com.jgkj.plugin.domain.Location;
+import com.jgkj.plugin.domain.ResponseObj;
 import com.jgkj.plugin.repositories.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * Created by chen on 16/10/19.
  */
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Controller
 public class LocationController extends BaseController{
 
@@ -31,9 +33,22 @@ public class LocationController extends BaseController{
 
     @RequestMapping("/attendance/getAllLocation")
     @ResponseBody
-    public List<Location> getSchoolLocation() {
-        List<Location> locationList = baseRepository.findAll();
-        return locationList;
+    public ResponseObj getSchoolLocation() {
+        ResponseObj ro = new ResponseObj();
+        try {
+            List<Location> locationList = baseRepository.findAll();
+            ro.setObj(locationList);
+            ro.setMsg("查询位置成功");
+            ro.setSuccess(true);
+            return ro;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            ro.setObj(new ArrayList<String>());
+            ro.setMsg("查询失败");
+            ro.setSuccess(false);
+        }
+        return ro;
     }
 
 
@@ -55,12 +70,10 @@ public class LocationController extends BaseController{
             @Override
             public Predicate toPredicate(Root<Location> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 Predicate condition = criteriaBuilder.equal(root.get("school_id"), schoolId);
-
                 return criteriaBuilder.and(condition);
             }
         };
-        Object location = baseRepository.findOne(specification);
-        return (Location) location;
+        return (Location) baseRepository.findOne(specification);
     }
 
 
