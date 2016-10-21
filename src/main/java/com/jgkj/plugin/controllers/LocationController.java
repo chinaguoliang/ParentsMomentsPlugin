@@ -54,26 +54,93 @@ public class LocationController extends BaseController{
 
     @RequestMapping("/attendance/saveLocation")
     @ResponseBody
-    public Location saveSchoolLocation(@RequestParam("schoolid") int schoolId,@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude) {
-        Location location = new Location();
-        location.setSchool_id(schoolId);
-        location.setLongitude(longitude);
-        location.setLatitude(latitude);
-        return baseRepository.save(location);
+    public ResponseObj saveSchoolLocation(@RequestParam("schoolid") int schoolId,@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude) {
+
+        ResponseObj ro = new ResponseObj();
+        try {
+            Location location = new Location();
+            location.setSchool_id(schoolId);
+            location.setLongitude(longitude);
+            location.setLatitude(latitude);
+            Location locationResult = baseRepository.save(location);
+            if (locationResult != null) {
+                ro.setMsg("保存位置成功");
+                ro.setSuccess(true);
+            } else {
+                ro.setMsg("保存位置失败");
+                ro.setSuccess(false);
+            }
+            ro.setObj("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ro.setMsg("保存位置失败");
+            ro.setSuccess(false);
+            ro.setObj("");
+        }
+        return ro;
+    }
+
+
+    @RequestMapping("/attendance/updateLocation")
+    @ResponseBody
+    public ResponseObj updateSchoolLocation(@RequestParam("id") long id,@RequestParam("schoolid") int schoolId,@RequestParam("longitude") String longitude,@RequestParam("latitude") String latitude) {
+
+        ResponseObj ro = new ResponseObj();
+        try {
+            Location location = new Location();
+            location.setId(id);
+            location.setSchool_id(schoolId);
+            location.setLongitude(longitude);
+            location.setLatitude(latitude);
+            Location locationResult = baseRepository.save(location);
+            if (locationResult != null) {
+                ro.setMsg("更新位置成功");
+                ro.setSuccess(true);
+            } else {
+                ro.setMsg("更新位置失败");
+                ro.setSuccess(false);
+            }
+            ro.setObj("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ro.setMsg("更新位置失败");
+            ro.setSuccess(false);
+            ro.setObj("");
+        }
+        return ro;
     }
 
 
     @RequestMapping("/attendance/getLocationBySchoolId")
     @ResponseBody
-    public Location getLocationBySchoolId(@RequestParam("schoolid") final int schoolId) {
-        Specification<Location> specification = new Specification<Location>() {
-            @Override
-            public Predicate toPredicate(Root<Location> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                Predicate condition = criteriaBuilder.equal(root.get("school_id"), schoolId);
-                return criteriaBuilder.and(condition);
+    public ResponseObj getLocationBySchoolId(@RequestParam("schoolid") final int schoolId) {
+        ResponseObj ro = new ResponseObj();
+        try {
+            Specification<Location> specification = new Specification<Location>() {
+                @Override
+                public Predicate toPredicate(Root<Location> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                    Predicate condition = criteriaBuilder.equal(root.get("school_id"), schoolId);
+                    return criteriaBuilder.and(condition);
+                }
+            };
+            Location location = (Location) baseRepository.findOne(specification);
+            if (location != null) {
+                ro.setMsg("查询位置成功");
+                ro.setSuccess(true);
+                ro.setObj(location);
+            } else {
+                ro.setMsg("未查询到相关学校位置信息");
+                ro.setSuccess(true);
+                ro.setObj("");
             }
-        };
-        return (Location) baseRepository.findOne(specification);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ro.setMsg("查询失败");
+            ro.setSuccess(false);
+            ro.setObj(new Object());
+        }
+        return ro;
     }
 
 
