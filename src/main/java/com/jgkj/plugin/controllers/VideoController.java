@@ -4,6 +4,7 @@ import com.jgkj.plugin.domain.ResponseObj;
 import com.jgkj.plugin.domain.VideoTimeControl;
 import com.jgkj.plugin.repositories.LocationRepository;
 import com.jgkj.plugin.repositories.VideoTimeControllRepository;
+import com.jgkj.plugin.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,7 @@ public class VideoController {
 
     @RequestMapping("/videoTime/saveVideoControlTime")
     @ResponseBody
-    public ResponseObj saveSchoolLocation(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId,@RequestParam("start_time") int startTime,@RequestParam("end_time") int endTime,@RequestParam("is_allow_play") int isAllowPlay) {
+    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId,@RequestParam("start_time") int startTime,@RequestParam("end_time") int endTime,@RequestParam("is_allow_play") int isAllowPlay) {
         VideoTimeControl videoTimeControl = getVideoControl(schoolId,classId);
         ResponseObj ro = new ResponseObj();
 
@@ -61,7 +62,54 @@ public class VideoController {
         return ro;
     }
 
-    private VideoTimeControl getVideoControl(final int schoolId,final int classId) {
+    @RequestMapping("/videoTime/getVideoControlTime")
+    @ResponseBody
+    public ResponseObj getVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId) {
+        VideoTimeControl videoTimeControl = getVideoControl(schoolId,classId);
+        ResponseObj ro = new ResponseObj();
+        try{
+            if (videoTimeControl == null) {
+                VideoTimeControl saveVideoTimeControl = new VideoTimeControl();
+                saveVideoTimeControl.setSchool_id(schoolId);
+                saveVideoTimeControl.setClass_id(classId);
+                saveVideoTimeControl.setIs_allow_play(0);
+                long dateTime[] = DateUtils.getWorkTimeOneDay();
+                if (dateTime == null) {
+                    ro.setObj("");
+                    ro.setMsg("获取数据失败");
+                    ro.setSuccess(false);
+                    return ro;
+                }
+
+                saveVideoTimeControl.setStart_time(dateTime[0]);
+                saveVideoTimeControl.setEnd_time(dateTime[1]);
+                VideoTimeControl saveResult= (VideoTimeControl) videoTimeControllRepository.save(saveVideoTimeControl);
+                if (saveResult != null) {
+                    ro.setObj(saveVideoTimeControl);
+                    ro.setMsg("获取数据成功");
+                    ro.setSuccess(false);
+                } else {
+                    ro.setObj("");
+                    ro.setMsg("获取数据失败");
+                    ro.setSuccess(false);
+                }
+            } else {
+                ro.setObj(videoTimeControl);
+                ro.setMsg("获取数据成功");
+                ro.setSuccess(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ro.setObj("");
+            ro.setMsg("获取数据失败");
+            ro.setSuccess(false);
+        }
+       return ro;
+    }
+
+
+
+        private VideoTimeControl getVideoControl(final int schoolId,final int classId) {
         Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
             @Override
             public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

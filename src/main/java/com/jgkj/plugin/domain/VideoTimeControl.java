@@ -19,10 +19,10 @@ public class VideoTimeControl {
     private int class_id;
 
     @Column(nullable = false)
-    private int start_time;
+    private long start_time;
 
     @Column(nullable = false)
-    private int end_time;
+    private long end_time;
 
     @Column(nullable = false)
     private int is_allow_play;  //0 允许播放  ， 1不允许播放
@@ -51,19 +51,19 @@ public class VideoTimeControl {
         this.class_id = class_id;
     }
 
-    public int getStart_time() {
+    public long getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(int start_time) {
+    public void setStart_time(long start_time) {
         this.start_time = start_time;
     }
 
-    public int getEnd_time() {
+    public long getEnd_time() {
         return end_time;
     }
 
-    public void setEnd_time(int end_time) {
+    public void setEnd_time(long end_time) {
         this.end_time = end_time;
     }
 
