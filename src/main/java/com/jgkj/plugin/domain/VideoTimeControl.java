@@ -25,7 +25,7 @@ public class VideoTimeControl {
     private int end_time;
 
     @Column(nullable = false)
-    private int is_allow_play;
+    private int is_allow_play;  //0 允许播放  ， 1不允许播放
 
     public Long getId() {
         return id;

@@ -16,6 +16,6 @@ import java.io.Serializable;
  * @date 16/3/23 下午2:34.
  * @blog http://blog.didispace.com
  */
-public interface BaseRepository extends JpaRepository<Location, Long>,JpaSpecificationExecutor {
+public interface LocationRepository extends JpaRepository<Location, Long>,JpaSpecificationExecutor {
 
 }

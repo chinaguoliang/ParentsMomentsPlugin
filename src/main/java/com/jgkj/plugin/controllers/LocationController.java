@@ -2,11 +2,9 @@ package com.jgkj.plugin.controllers;
 
 import com.jgkj.plugin.domain.Location;
 import com.jgkj.plugin.domain.ResponseObj;
-import com.jgkj.plugin.repositories.BaseRepository;
+import com.jgkj.plugin.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +20,12 @@ import java.util.List;
 public class LocationController extends BaseController{
 
     @Autowired
-    BaseRepository baseRepository;
+    LocationRepository locationRepository;
 
     @RequestMapping("/attendance/getLocation")
     @ResponseBody
     public Location getSchoolLocation(@RequestParam("id") long id) {
-        Location location = baseRepository.findOne(id);
+        Location location = (Location) locationRepository.findOne(id);
         return location;
     }
 
@@ -36,7 +34,7 @@ public class LocationController extends BaseController{
     public ResponseObj getSchoolLocation() {
         ResponseObj ro = new ResponseObj();
         try {
-            List<Location> locationList = baseRepository.findAll();
+            List<Location> locationList = locationRepository.findAll();
             ro.setObj(locationList);
             ro.setMsg("查询位置成功");
             ro.setSuccess(true);
@@ -62,7 +60,7 @@ public class LocationController extends BaseController{
             location.setSchool_id(schoolId);
             location.setLongitude(longitude);
             location.setLatitude(latitude);
-            Location locationResult = baseRepository.save(location);
+            Location locationResult = (Location) locationRepository.save(location);
             if (locationResult != null) {
                 ro.setMsg("保存位置成功");
                 ro.setSuccess(true);
@@ -92,7 +90,7 @@ public class LocationController extends BaseController{
             location.setSchool_id(schoolId);
             location.setLongitude(longitude);
             location.setLatitude(latitude);
-            Location locationResult = baseRepository.save(location);
+            Location locationResult = (Location) locationRepository.save(location);
             if (locationResult != null) {
                 ro.setMsg("更新位置成功");
                 ro.setSuccess(true);
@@ -123,7 +121,7 @@ public class LocationController extends BaseController{
                     return criteriaBuilder.and(condition);
                 }
             };
-            Location location = (Location) baseRepository.findOne(specification);
+            Location location = (Location) locationRepository.findOne(specification);
             if (location != null) {
                 ro.setMsg("查询位置成功");
                 ro.setSuccess(true);
@@ -183,6 +181,6 @@ public class LocationController extends BaseController{
 //                        .toArray(new Predicate[] {}));
 //            }
 //        };
-//        return baseRepository.findOne(specification);
+//        return locationRepository.findOne(specification);
 //    }
 }
