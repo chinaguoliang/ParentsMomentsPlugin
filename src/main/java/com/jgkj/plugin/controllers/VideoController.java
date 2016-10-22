@@ -25,8 +25,8 @@ public class VideoController {
 
     @RequestMapping("/videoTime/saveVideoControlTime")
     @ResponseBody
-    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId,@RequestParam("start_time") int startTime,@RequestParam("end_time") int endTime,@RequestParam("is_allow_play") int isAllowPlay) {
-        VideoTimeControl videoTimeControl = getVideoControl(schoolId,classId);
+    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay) {
+        VideoTimeControl videoTimeControl = getVideoControl(schoolId, classId);
         ResponseObj ro = new ResponseObj();
 
         try {
@@ -41,14 +41,14 @@ public class VideoController {
             addVideoTimeControl.setEnd_time(endTime);
             addVideoTimeControl.setStart_time(startTime);
             addVideoTimeControl.setIs_allow_play(isAllowPlay);
-            VideoTimeControl addResult= (VideoTimeControl) videoTimeControllRepository.save(addVideoTimeControl);
+            VideoTimeControl addResult = (VideoTimeControl) videoTimeControllRepository.save(addVideoTimeControl);
             if (addResult != null) {
                 ro.setObj("");
-                ro.setMsg("更新位置成功");
+                ro.setMsg("更新时间成功");
                 ro.setSuccess(true);
             } else {
                 ro.setObj("");
-                ro.setMsg("更新位置失败");
+                ro.setMsg("更新时间失败");
                 ro.setSuccess(false);
             }
 
@@ -65,25 +65,21 @@ public class VideoController {
     @RequestMapping("/videoTime/getVideoControlTime")
     @ResponseBody
     public ResponseObj getVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId) {
-        VideoTimeControl videoTimeControl = getVideoControl(schoolId,classId);
+        VideoTimeControl videoTimeControl = getVideoControl(schoolId, classId);
         ResponseObj ro = new ResponseObj();
-        try{
+        try {
             if (videoTimeControl == null) {
                 VideoTimeControl saveVideoTimeControl = new VideoTimeControl();
                 saveVideoTimeControl.setSchool_id(schoolId);
                 saveVideoTimeControl.setClass_id(classId);
                 saveVideoTimeControl.setIs_allow_play(0);
-                long dateTime[] = DateUtils.getWorkTimeOneDay();
-                if (dateTime == null) {
-                    ro.setObj("");
-                    ro.setMsg("获取数据失败");
-                    ro.setSuccess(false);
-                    return ro;
-                }
 
-                saveVideoTimeControl.setStart_time(dateTime[0]);
-                saveVideoTimeControl.setEnd_time(dateTime[1]);
-                VideoTimeControl saveResult= (VideoTimeControl) videoTimeControllRepository.save(saveVideoTimeControl);
+                saveVideoTimeControl.setStart_time(DateUtils.DEFAULT_START_TIME);
+                saveVideoTimeControl.setEnd_time(DateUtils.DEFAULT_END_TIME);
+                VideoTimeControl saveResult = (VideoTimeControl) videoTimeControllRepository.save(saveVideoTimeControl);
+                long dateTime[] = DateUtils.getWorkTimeOneDay("", "");
+                saveVideoTimeControl.setStart_time(dateTime[0] + "");
+                saveVideoTimeControl.setEnd_time(dateTime[1] + "");
                 if (saveResult != null) {
                     ro.setObj(saveVideoTimeControl);
                     ro.setMsg("获取数据成功");
@@ -104,19 +100,18 @@ public class VideoController {
             ro.setMsg("获取数据失败");
             ro.setSuccess(false);
         }
-       return ro;
+        return ro;
     }
 
 
-
-        private VideoTimeControl getVideoControl(final int schoolId,final int classId) {
+    private VideoTimeControl getVideoControl(final int schoolId, final int classId) {
         Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
             @Override
             public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 Path<String> schoolIdPath = root.get("school_id");
                 Path<String> classIdPath = root.get("class_id");
 
-                return criteriaBuilder.and(criteriaBuilder.equal(schoolIdPath,schoolId),criteriaBuilder.equal(classIdPath,classId));
+                return criteriaBuilder.and(criteriaBuilder.equal(schoolIdPath, schoolId), criteriaBuilder.equal(classIdPath, classId));
             }
         };
 

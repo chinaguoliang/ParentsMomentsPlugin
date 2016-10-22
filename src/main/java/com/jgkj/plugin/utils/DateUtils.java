@@ -7,17 +7,27 @@ import java.text.ParseException;
  * Created by chen on 16/10/22.
  */
 public class DateUtils {
-
-    public static long[] getWorkTimeOneDay() {
+    public static final String DEFAULT_START_TIME = "09:0:0";
+    public static final String DEFAULT_END_TIME = "18:0:0";
+    public static long[] getWorkTimeOneDay(String startFlag,String endFlag) {
         long currTime = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd");
         String currentDay = sdf.format(currTime);
-        SimpleDateFormat reFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-        String startTime = currentDay + " 09-0-0";
-        String endTime = currentDay + " 18-0-0";
+        SimpleDateFormat reFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+
+        String startTime;
+        String endTime;
+        if (startFlag == null || "".equals(startFlag)) {
+            startTime = currentDay + " " + DEFAULT_START_TIME;
+            endTime = currentDay + " " + DEFAULT_END_TIME;
+        } else {
+            startTime = currentDay + " " + startFlag;
+            endTime = currentDay + " " + endFlag;
+        }
+
         try {
-            long startTimeLong = stringToLong(startTime,"yyyy-MM-dd HH-mm-ss");
-            long endTimeLong = stringToLong(endTime,"yyyy-MM-dd HH-mm-ss");
+            long startTimeLong = stringToLong(startTime,"yyyy:MM:dd HH:mm:ss");
+            long endTimeLong = stringToLong(endTime,"yyyy:MM:dd HH:mm:ss");
             return  new long[]{startTimeLong,endTimeLong};
         } catch (Exception e){
             e.printStackTrace();
