@@ -77,13 +77,13 @@ public class VideoController {
                 saveVideoTimeControl.setStart_time(DateUtils.DEFAULT_START_TIME);
                 saveVideoTimeControl.setEnd_time(DateUtils.DEFAULT_END_TIME);
                 VideoTimeControl saveResult = (VideoTimeControl) videoTimeControllRepository.save(saveVideoTimeControl);
-                long dateTime[] = DateUtils.getWorkTimeOneDay("", "");
-                saveVideoTimeControl.setStart_time(dateTime[0] + "");
-                saveVideoTimeControl.setEnd_time(dateTime[1] + "");
+//                long dateTime[] = DateUtils.getWorkTimeOneDay("", "");
+//                saveVideoTimeControl.setStart_time(dateTime[0] + "");
+//                saveVideoTimeControl.setEnd_time(dateTime[1] + "");
                 if (saveResult != null) {
                     ro.setObj(saveVideoTimeControl);
                     ro.setMsg("获取数据成功");
-                    ro.setSuccess(false);
+                    ro.setSuccess(true);
                 } else {
                     ro.setObj("");
                     ro.setMsg("获取数据失败");
@@ -92,7 +92,7 @@ public class VideoController {
             } else {
                 ro.setObj(videoTimeControl);
                 ro.setMsg("获取数据成功");
-                ro.setSuccess(false);
+                ro.setSuccess(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
