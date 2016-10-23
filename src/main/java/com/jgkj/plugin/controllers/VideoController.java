@@ -27,7 +27,7 @@ public class VideoController {
 
     @RequestMapping("/videoTime/saveVideoControlTime")
     @ResponseBody
-    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay) {
+    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay,@RequestParam("serial_number") int serialNumber) {
         VideoTimeControl videoTimeControl = getVideoControl(schoolId, classId);
         ResponseObj ro = new ResponseObj();
 
@@ -43,6 +43,7 @@ public class VideoController {
             addVideoTimeControl.setEnd_time(endTime);
             addVideoTimeControl.setStart_time(startTime);
             addVideoTimeControl.setIs_allow_play(isAllowPlay);
+            addVideoTimeControl.setSerial_number(serialNumber);
             VideoTimeControl addResult = (VideoTimeControl) videoTimeControllRepository.save(addVideoTimeControl);
             if (addResult != null) {
                 ro.setObj("");

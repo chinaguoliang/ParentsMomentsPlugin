@@ -27,6 +27,17 @@ public class VideoTimeControl {
     @Column(nullable = false)
     private int is_allow_play;  //0 允许播放  ， 1不允许播放
 
+    @Column(nullable = false)
+    private int serial_number;
+
+    public int getSerial_number() {
+        return serial_number;
+    }
+
+    public void setSerial_number(int serial_number) {
+        this.serial_number = serial_number;
+    }
+
     public Long getId() {
         return id;
     }
