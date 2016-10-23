@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 
 @Controller
-@RequestMapping(method= RequestMethod.POST)
+@RequestMapping(method= RequestMethod.GET)
 public class BaseController {
 
 

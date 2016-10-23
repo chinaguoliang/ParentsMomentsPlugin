@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by chen on 16/10/20.
@@ -117,5 +119,31 @@ public class VideoController {
 
         VideoTimeControl videoTimeControl = (VideoTimeControl) videoTimeControllRepository.findOne(specification);
         return videoTimeControl;
+    }
+
+
+    @RequestMapping("/videoTime/getVideoControlTimeBySchoolId")
+    @ResponseBody
+    public ResponseObj getVideoControlTimeBySchoolId(final @RequestParam("schoolid") int schoolId) {
+        Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
+            @Override
+            public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Path<String> schoolIdPath = root.get("school_id");
+
+                return criteriaBuilder.and(criteriaBuilder.equal(schoolIdPath, schoolId));
+            }
+        };
+        List<VideoTimeControl> videoControllList = videoTimeControllRepository.findAll(specification);
+        ResponseObj ro = new ResponseObj();
+        if (videoControllList != null && videoControllList.size() > 0) {
+            ro.setObj(videoControllList);
+            ro.setMsg("获取数据成功");
+            ro.setSuccess(true);
+        } else {
+            ro.setObj(new ArrayList<VideoTimeControl>());
+            ro.setMsg("获取数据失败");
+            ro.setSuccess(false);
+        }
+        return  ro;
     }
 }
