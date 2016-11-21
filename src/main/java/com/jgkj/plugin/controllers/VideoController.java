@@ -142,8 +142,8 @@ public class VideoController {
             ro.setSuccess(true);
         } else {
             ro.setObj(new ArrayList<VideoTimeControl>());
-            ro.setMsg("获取数据失败");
-            ro.setSuccess(false);
+            ro.setMsg("获取数据成功");
+            ro.setSuccess(true);
         }
         return  ro;
     }
