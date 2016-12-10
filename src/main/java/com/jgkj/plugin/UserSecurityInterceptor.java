@@ -12,7 +12,7 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-        Logger.getRootLogger().info("preHandle1");
+        Logger.getRootLogger().info("preHandle1 ip:" + request.getRemoteAddr());
 
 //        Object obj = request.getSession().getAttribute("cur_user");
 //        if (obj == null || !(obj instanceof UserEntity)) {
