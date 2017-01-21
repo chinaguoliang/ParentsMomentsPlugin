@@ -8,6 +8,24 @@ public class ResponseObj {
     String msg = "";
     boolean success;
     Object obj;
+    Object videoInfo;
+    Object videoControllList;
+
+    public Object getVideoControllList() {
+        return videoControllList;
+    }
+
+    public void setVideoControllList(Object videoControllList) {
+        this.videoControllList = videoControllList;
+    }
+
+    public Object getVideoInfo() {
+        return videoInfo;
+    }
+
+    public void setVideoInfo(Object videoInfo) {
+        this.videoInfo = videoInfo;
+    }
 
     public String getMsg() {
         return msg;

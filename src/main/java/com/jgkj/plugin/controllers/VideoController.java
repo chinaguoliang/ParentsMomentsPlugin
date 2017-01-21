@@ -1,8 +1,10 @@
 package com.jgkj.plugin.controllers;
 
 import com.jgkj.plugin.domain.ResponseObj;
+import com.jgkj.plugin.domain.VideoInfo;
 import com.jgkj.plugin.domain.VideoTimeControl;
 import com.jgkj.plugin.repositories.LocationRepository;
+import com.jgkj.plugin.repositories.VideoInfoMapper;
 import com.jgkj.plugin.repositories.VideoTimeControllRepository;
 import com.jgkj.plugin.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ import java.util.List;
 public class VideoController {
     @Autowired
     VideoTimeControllRepository videoTimeControllRepository;
+
+    @Autowired
+    VideoInfoMapper videoInfoMapper;
 
     @RequestMapping("/videoTime/saveVideoControlTime")
     @ResponseBody
@@ -68,7 +73,22 @@ public class VideoController {
     @RequestMapping("/videoTime/getVideoControlTime")
     @ResponseBody
     public ResponseObj getVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId) {
-        VideoTimeControl videoTimeControl = getVideoControl(schoolId, classId);
+        VideoTimeControl videoTimeControl = null;
+        List<VideoInfo> videoInfoList = null;
+        List <VideoTimeControl> videoControllList = null;
+        if (classId == -1 || "".equals(classId)) {
+            //权限是园长
+            videoControllList = getVideoControlForSchoolId(schoolId);
+            videoInfoList = videoInfoMapper.findVideoInfoBySchoolIdClassId(String.valueOf(schoolId),String.valueOf(classId));
+
+        } else {
+            //权限是教师或者家长
+            videoTimeControl = getVideoControl(schoolId, classId);
+            videoInfoList = videoInfoMapper.findVideoInfoBySchoolId(String.valueOf(schoolId));
+        }
+
+
+
         ResponseObj ro = new ResponseObj();
         try {
             if (videoTimeControl == null) {
@@ -97,6 +117,9 @@ public class VideoController {
                 ro.setMsg("获取数据成功");
                 ro.setSuccess(true);
             }
+
+            ro.setVideoInfo(videoInfoList);
+            ro.setVideoControllList(videoControllList);
         } catch (Exception e) {
             e.printStackTrace();
             ro.setObj("");
@@ -120,6 +143,21 @@ public class VideoController {
 
         VideoTimeControl videoTimeControl = (VideoTimeControl) videoTimeControllRepository.findOne(specification);
         return videoTimeControl;
+    }
+
+
+    private List<VideoTimeControl> getVideoControlForSchoolId(final int schoolId) {
+        Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
+            @Override
+            public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Path<String> schoolIdPath = root.get("school_id");
+
+                return criteriaBuilder.and(criteriaBuilder.equal(schoolIdPath, schoolId));
+            }
+        };
+
+        List<VideoTimeControl> videoControllList = videoTimeControllRepository.findAll(specification);
+        return videoControllList;
     }
 
 
