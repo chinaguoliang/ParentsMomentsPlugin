@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by chen on 16/11/13.
  */
 @Controller
-public class TestMybatisController {
+public class TestMybatisController implements Serializable{
     @Autowired
     LocationMapper locationMap;
 
