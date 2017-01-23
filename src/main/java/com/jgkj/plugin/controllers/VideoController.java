@@ -72,15 +72,28 @@ public class VideoController {
 
     @RequestMapping("/videoTime/getVideoControlTime")
     @ResponseBody
-    public ResponseObj getVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId) {
-        List <VideoTimeControl> videoControllList = null;
-        if (classId == -1 || "".equals(classId)) {
+    public ResponseObj getVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId) {
+        List <VideoTimeControl> videoControllList = new ArrayList<VideoTimeControl>();
+        if (classId == null || "".equals(classId)) {
             //权限是园长
             videoControllList = getVideoControlForSchoolId(schoolId);
 
         } else {
+            String classids[] = classId.split(",");
             //权限是教师或者家长
-            videoControllList = getVideoControls(schoolId, classId);
+            if (classids.length > 1) {
+                //管理多个班级的情况
+
+                for (int i = 0 ; i < classids.length ; i++) {
+                    List<VideoTimeControl> tempVideoControllList = getVideoControls(schoolId, classids[i]);
+                    videoControllList.addAll(tempVideoControllList);
+                }
+
+            } else {
+                //管理一个班级的情况
+                videoControllList = getVideoControls(schoolId, classId);
+            }
+
         }
 
 
@@ -100,7 +113,7 @@ public class VideoController {
     }
 
 
-    private List<VideoTimeControl> getVideoControls(final int schoolId, final int classId) {
+    private List<VideoTimeControl> getVideoControls(final String schoolId, final String classId) {
         Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
             @Override
             public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -132,7 +145,7 @@ public class VideoController {
     }
 
 
-    private List<VideoTimeControl> getVideoControlForSchoolId(final int schoolId) {
+    private List<VideoTimeControl> getVideoControlForSchoolId(final String schoolId) {
         Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
             @Override
             public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
