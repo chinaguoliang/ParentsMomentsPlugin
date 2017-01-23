@@ -73,53 +73,23 @@ public class VideoController {
     @RequestMapping("/videoTime/getVideoControlTime")
     @ResponseBody
     public ResponseObj getVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId) {
-        VideoTimeControl videoTimeControl = null;
-        List<VideoInfo> videoInfoList = null;
         List <VideoTimeControl> videoControllList = null;
         if (classId == -1 || "".equals(classId)) {
             //权限是园长
             videoControllList = getVideoControlForSchoolId(schoolId);
-            videoInfoList = videoInfoMapper.findVideoInfoBySchoolIdClassId(String.valueOf(schoolId),String.valueOf(classId));
 
         } else {
             //权限是教师或者家长
-            videoTimeControl = getVideoControl(schoolId, classId);
-            videoInfoList = videoInfoMapper.findVideoInfoBySchoolId(String.valueOf(schoolId));
+            videoControllList = getVideoControls(schoolId, classId);
         }
 
 
 
         ResponseObj ro = new ResponseObj();
         try {
-            if (videoTimeControl == null) {
-                VideoTimeControl saveVideoTimeControl = new VideoTimeControl();
-                saveVideoTimeControl.setSchool_id(schoolId);
-                saveVideoTimeControl.setClass_id(classId);
-                saveVideoTimeControl.setIs_allow_play(0);
-
-                saveVideoTimeControl.setStart_time(DateUtils.DEFAULT_START_TIME);
-                saveVideoTimeControl.setEnd_time(DateUtils.DEFAULT_END_TIME);
-                VideoTimeControl saveResult = (VideoTimeControl) videoTimeControllRepository.save(saveVideoTimeControl);
-//                long dateTime[] = DateUtils.getWorkTimeOneDay("", "");
-//                saveVideoTimeControl.setStart_time(dateTime[0] + "");
-//                saveVideoTimeControl.setEnd_time(dateTime[1] + "");
-                if (saveResult != null) {
-                    ro.setObj(saveVideoTimeControl);
-                    ro.setMsg("获取数据成功");
-                    ro.setSuccess(true);
-                } else {
-                    ro.setObj("");
-                    ro.setMsg("获取数据失败");
-                    ro.setSuccess(false);
-                }
-            } else {
-                ro.setObj(videoTimeControl);
-                ro.setMsg("获取数据成功");
-                ro.setSuccess(true);
-            }
-
-            ro.setVideoInfo(videoInfoList);
-            ro.setVideoControllList(videoControllList);
+            ro.setObj(videoControllList);
+            ro.setMsg("获取数据成功");
+            ro.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();
             ro.setObj("");
@@ -127,6 +97,22 @@ public class VideoController {
             ro.setSuccess(false);
         }
         return ro;
+    }
+
+
+    private List<VideoTimeControl> getVideoControls(final int schoolId, final int classId) {
+        Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
+            @Override
+            public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Path<String> schoolIdPath = root.get("school_id");
+                Path<String> classIdPath = root.get("class_id");
+
+                return criteriaBuilder.and(criteriaBuilder.equal(schoolIdPath, schoolId), criteriaBuilder.equal(classIdPath, classId));
+            }
+        };
+
+        List<VideoTimeControl> videoControllList = videoTimeControllRepository.findAll(specification);
+        return videoControllList;
     }
 
 
