@@ -120,6 +120,36 @@ public class VideoController {
     }
 
 
+    @RequestMapping("/videoTime/getOneVideoControlTimeBySerialNumber")
+    @ResponseBody
+    public ResponseObj getOneVideoControlTimeBySerialNumber(@RequestParam("serialnum") final String serialnum) {
+        Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
+            @Override
+            public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Path<String> serialnumPath = root.get("serial_number");
+
+                return criteriaBuilder.and(criteriaBuilder.equal(serialnumPath, serialnum));
+            }
+        };
+
+        ResponseObj ro = new ResponseObj();
+        try {
+        VideoTimeControl videoTimeControl = (VideoTimeControl) videoTimeControllRepository.findOne(specification);
+
+
+            ro.setObj(videoTimeControl);
+            ro.setMsg("获取数据成功");
+            ro.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ro.setObj("");
+            ro.setMsg("获取数据失败");
+            ro.setSuccess(false);
+        }
+
+        return ro;
+    }
+
     private List<VideoTimeControl> getVideoControls(final String schoolId, final String classId) {
         Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
             @Override
