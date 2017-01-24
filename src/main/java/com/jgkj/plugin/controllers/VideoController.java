@@ -46,8 +46,8 @@ public class VideoController {
                     addVideoTimeControl.setId(videoTimeControl.getId());
                 }
 
-//                addVideoTimeControl.setSchool_id(Integer.parseInt(schoolId));
-//                addVideoTimeControl.setClass_id(Integer.parseInt(classId));
+                addVideoTimeControl.setSchool_id(Integer.parseInt(schoolId));
+                addVideoTimeControl.setClass_id(Integer.parseInt(classId));
                 addVideoTimeControl.setEnd_time(endTime);
                 addVideoTimeControl.setStart_time(startTime);
                 addVideoTimeControl.setIs_allow_play(isAllowPlay);
