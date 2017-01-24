@@ -32,40 +32,47 @@ public class VideoController {
 
     @RequestMapping("/videoTime/saveVideoControlTime")
     @ResponseBody
-    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") int schoolId, @RequestParam("classid") int classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay,@RequestParam("serial_number") int serialNumber) {
-        VideoTimeControl videoTimeControl = getVideoControl(schoolId, classId);
+    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay,@RequestParam("serial_number") int serialNumber) {
+
         ResponseObj ro = new ResponseObj();
+        String classids[] = classId.split(",");
+        for (int i = 0 ; i < classids.length ; i++) {
+            String tempClassId = classids[i];
+            VideoTimeControl videoTimeControl = getVideoControl(schoolId, tempClassId);
+            try {
+                VideoTimeControl addVideoTimeControl = new VideoTimeControl();
+                if (videoTimeControl != null) {
+                    //增加
+                    addVideoTimeControl.setId(videoTimeControl.getId());
+                }
 
-        try {
-            VideoTimeControl addVideoTimeControl = new VideoTimeControl();
-            if (videoTimeControl != null) {
-                //增加
-                addVideoTimeControl.setId(videoTimeControl.getId());
-            }
+                addVideoTimeControl.setSchool_id(Integer.parseInt(schoolId));
+                addVideoTimeControl.setClass_id(Integer.parseInt(tempClassId));
+                addVideoTimeControl.setEnd_time(endTime);
+                addVideoTimeControl.setStart_time(startTime);
+                addVideoTimeControl.setIs_allow_play(isAllowPlay);
+                addVideoTimeControl.setSerial_number(serialNumber);
+                VideoTimeControl addResult = (VideoTimeControl) videoTimeControllRepository.save(addVideoTimeControl);
+                if (addResult != null) {
+                    ro.setObj("");
+                    ro.setMsg("更新时间成功");
+                    ro.setSuccess(true);
+                } else {
+                    ro.setObj("");
+                    ro.setMsg("更新时间失败");
+                    ro.setSuccess(false);
+                    break;
+                }
 
-            addVideoTimeControl.setSchool_id(schoolId);
-            addVideoTimeControl.setClass_id(classId);
-            addVideoTimeControl.setEnd_time(endTime);
-            addVideoTimeControl.setStart_time(startTime);
-            addVideoTimeControl.setIs_allow_play(isAllowPlay);
-            addVideoTimeControl.setSerial_number(serialNumber);
-            VideoTimeControl addResult = (VideoTimeControl) videoTimeControllRepository.save(addVideoTimeControl);
-            if (addResult != null) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 ro.setObj("");
-                ro.setMsg("更新时间成功");
-                ro.setSuccess(true);
-            } else {
-                ro.setObj("");
-                ro.setMsg("更新时间失败");
+                ro.setMsg("更新位置失败");
                 ro.setSuccess(false);
+                break;
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ro.setObj("");
-            ro.setMsg("更新位置失败");
-            ro.setSuccess(false);
         }
+
 
         return ro;
     }
@@ -129,7 +136,7 @@ public class VideoController {
     }
 
 
-    private VideoTimeControl getVideoControl(final int schoolId, final int classId) {
+    private VideoTimeControl getVideoControl(final String schoolId, final String classId) {
         Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
             @Override
             public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
