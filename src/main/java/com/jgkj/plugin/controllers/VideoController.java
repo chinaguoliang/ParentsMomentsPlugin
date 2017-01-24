@@ -35,10 +35,10 @@ public class VideoController {
     public ResponseObj saveVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay,@RequestParam("serial_number") int serialNumber) {
 
         ResponseObj ro = new ResponseObj();
-        String classids[] = classId.split(",");
-        for (int i = 0 ; i < classids.length ; i++) {
-            String tempClassId = classids[i];
-            VideoTimeControl videoTimeControl = getVideoControl(schoolId, tempClassId);
+//        String classids[] = classId.split(",");
+//        for (int i = 0 ; i < classids.length ; i++) {
+//            String tempClassId = classids[i];
+            VideoTimeControl videoTimeControl = getVideoControllBySerialNumber(serialNumber + "");
             try {
                 VideoTimeControl addVideoTimeControl = new VideoTimeControl();
                 if (videoTimeControl != null) {
@@ -46,8 +46,8 @@ public class VideoController {
                     addVideoTimeControl.setId(videoTimeControl.getId());
                 }
 
-                addVideoTimeControl.setSchool_id(Integer.parseInt(schoolId));
-                addVideoTimeControl.setClass_id(Integer.parseInt(tempClassId));
+//                addVideoTimeControl.setSchool_id(Integer.parseInt(schoolId));
+//                addVideoTimeControl.setClass_id(Integer.parseInt(classId));
                 addVideoTimeControl.setEnd_time(endTime);
                 addVideoTimeControl.setStart_time(startTime);
                 addVideoTimeControl.setIs_allow_play(isAllowPlay);
@@ -61,7 +61,6 @@ public class VideoController {
                     ro.setObj("");
                     ro.setMsg("更新时间失败");
                     ro.setSuccess(false);
-                    break;
                 }
 
             } catch (Exception e) {
@@ -69,9 +68,8 @@ public class VideoController {
                 ro.setObj("");
                 ro.setMsg("更新位置失败");
                 ro.setSuccess(false);
-                break;
             }
-        }
+//        }
 
 
         return ro;
@@ -117,6 +115,21 @@ public class VideoController {
             ro.setSuccess(false);
         }
         return ro;
+    }
+
+    private VideoTimeControl getVideoControllBySerialNumber(final String serialnum) {
+        Specification<VideoTimeControl> specification = new Specification<VideoTimeControl>() {
+            @Override
+            public Predicate toPredicate(Root<VideoTimeControl> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Path<String> serialnumPath = root.get("serial_number");
+
+                return criteriaBuilder.and(criteriaBuilder.equal(serialnumPath, serialnum));
+            }
+        };
+
+        ResponseObj ro = new ResponseObj();
+        VideoTimeControl videoTimeControl = (VideoTimeControl) videoTimeControllRepository.findOne(specification);
+        return videoTimeControl;
     }
 
 
