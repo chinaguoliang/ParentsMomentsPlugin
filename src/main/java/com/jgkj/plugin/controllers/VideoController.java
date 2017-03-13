@@ -30,6 +30,7 @@ public class VideoController {
     @Autowired
     VideoInfoMapper videoInfoMapper;
 
+    //used api
     @RequestMapping("/videoTime/saveVideoControlTime")
     @ResponseBody
     public ResponseObj saveVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay,@RequestParam("serial_number") int serialNumber) {
@@ -74,7 +75,7 @@ public class VideoController {
 
         return ro;
     }
-
+    //used api
     @RequestMapping("/videoTime/getVideoControlTime")
     @ResponseBody
     public ResponseObj getVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId) {
