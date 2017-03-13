@@ -30,6 +30,17 @@ public class VideoTimeControl {
     @Column(nullable = false)
     private int serial_number;
 
+    @Column(nullable = false)
+    private String verify_number;
+
+    public String getVerify_number() {
+        return verify_number;
+    }
+
+    public void setVerify_number(String verify_number) {
+        this.verify_number = verify_number;
+    }
+
     public int getSerial_number() {
         return serial_number;
     }

@@ -33,7 +33,7 @@ public class VideoController {
     //used api
     @RequestMapping("/videoTime/saveVideoControlTime")
     @ResponseBody
-    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay,@RequestParam("serial_number") int serialNumber) {
+    public ResponseObj saveVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId, @RequestParam("start_time") String startTime, @RequestParam("end_time") String endTime, @RequestParam("is_allow_play") int isAllowPlay,@RequestParam("serial_number") int serialNumber,@RequestParam("verify_number") String verifyNumber) {
 
         ResponseObj ro = new ResponseObj();
 //        String classids[] = classId.split(",");
@@ -53,6 +53,7 @@ public class VideoController {
                 addVideoTimeControl.setStart_time(startTime);
                 addVideoTimeControl.setIs_allow_play(isAllowPlay);
                 addVideoTimeControl.setSerial_number(serialNumber);
+                addVideoTimeControl.setVerify_number(verifyNumber);
                 VideoTimeControl addResult = (VideoTimeControl) videoTimeControllRepository.save(addVideoTimeControl);
                 if (addResult != null) {
                     ro.setObj("");
