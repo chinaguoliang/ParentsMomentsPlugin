@@ -81,7 +81,7 @@ public class VideoController {
     @ResponseBody
     public ResponseObj getVideoControlTime(@RequestParam("schoolid") String schoolId, @RequestParam("classid") String classId) {
         List <VideoTimeControl> videoControllList = new ArrayList<VideoTimeControl>();
-        if (classId == null || "".equals(classId)) {
+        if (classId == null || "".equals(classId) || "-1".equals(classId)) {
             //权限是园长
             videoControllList = getVideoControlForSchoolId(schoolId);
 
@@ -101,6 +101,10 @@ public class VideoController {
                 videoControllList = getVideoControls(schoolId, classId);
             }
 
+
+            //获取学校公共区域数据
+            List <VideoTimeControl> publicAreaListData = getVideoControls(schoolId, "-1");
+            videoControllList.addAll(publicAreaListData);
         }
 
 
