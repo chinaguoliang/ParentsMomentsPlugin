@@ -30,7 +30,7 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
             String errorJson = "{\"code\":6666,\"msg\":\"error\"}";
             responseOutWithJson(response,errorJson);
             //别处过来都请求，禁止
-            return false;//通过验证
+            return false;
         }
 
 
