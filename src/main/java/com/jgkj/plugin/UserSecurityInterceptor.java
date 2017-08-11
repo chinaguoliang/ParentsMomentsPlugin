@@ -8,11 +8,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UserSecurityInterceptor implements HandlerInterceptor {
+    private String localRequestUrl = "http://localhost:8080";
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
         Logger.getRootLogger().info("preHandle1 ip:" + request.getRemoteAddr());
+
+        System.out.println("the remote addr:" + request.getRemoteAddr());
+        System.out.println("the local addr:" + request.getLocalAddr());
+        System.out.println("the local port:" + request.getLocalPort());
+        System.out.println("the requestUrl:" + request.getRequestURL());
+
+        String requestUrl = request.getRequestURL().toString();
+        if (requestUrl.startsWith(localRequestUrl)) {
+            //nginx转发过来都本地请求通过
+            return true;//通过验证
+        } else {
+            //别处过来都请求，禁止
+            return false;//通过验证
+        }
+
 
 //        Object obj = request.getSession().getAttribute("cur_user");
 //        if (obj == null || !(obj instanceof UserEntity)) {
@@ -20,7 +36,7 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
 //            return false;
 //        }
 
-        return true;//通过验证
+
         //return false; //阻止用户请求
     }
 
