@@ -6,6 +6,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class UserSecurityInterceptor implements HandlerInterceptor {
     private String localRequestUrl = "http://localhost:8080";
@@ -25,6 +27,8 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
             //nginx转发过来都本地请求通过
             return true;//通过验证
         } else {
+            String errorJson = "{\"code\":6666,\"msg\":\"error\"}";
+            responseOutWithJson(response,errorJson);
             //别处过来都请求，禁止
             return false;//通过验证
         }
@@ -53,6 +57,29 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
             throws Exception {
 
         Logger.getRootLogger().info("afterCompletion:" + response.getStatus());
+    }
+
+
+    /**
+     * 以JSON格式输出
+     * @param response
+     */
+    protected void responseOutWithJson(HttpServletResponse response,
+                                       String responseObject) {
+        //将实体对象转换为JSON Object转换
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+            out.append(responseObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 
 }
